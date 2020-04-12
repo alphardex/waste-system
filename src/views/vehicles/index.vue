@@ -42,11 +42,15 @@
       >
       </el-table-column>
       <el-table-column label="车牌号" prop="platenumber"></el-table-column>
-      <el-table-column label="购买时间" prop="buytime"></el-table-column>
+      <el-table-column label="购买时间" prop="buytime">
+        <template slot-scope="{ row }">
+          <span>{{ row.buytime | parseTime("{y}-{m}-{d}") }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="购买金额(元)" prop="cost"></el-table-column>
       <el-table-column label="车辆型号" prop="typenumber"></el-table-column>
       <el-table-column label="载重量(吨)" prop="capacity"></el-table-column>
-      <el-table-column label="行驶里程(千米)" prop="mileage"></el-table-column>
+      <el-table-column label="行驶里程(公里)" prop="mileage"></el-table-column>
       <el-table-column label="操作" align="center" width="160">
         <template slot-scope="{ row, $index }">
           <el-button size="mini" type="primary" @click="handleUpdate(row)"
@@ -69,23 +73,23 @@
       @pagination="getList"
     ></Pagination>
     <el-dialog title="新建垃圾车" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="车牌号" label-width="120px">
+      <el-form :model="form" :rules="rules" ref="ruleForm">
+        <el-form-item label="车牌号" label-width="120px" prop="platenumber">
           <el-input v-model="form.platenumber" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买时间" label-width="120px">
-          <el-input v-model="form.buytime" autocomplete="off"></el-input>
+        <el-form-item label="购买时间" label-width="120px" prop="buytime">
+          <el-date-picker v-model="form.buytime"></el-date-picker>
         </el-form-item>
-        <el-form-item label="购买金额(元)" label-width="120px">
-          <el-input v-model="form.cost" autocomplete="off"></el-input>
+        <el-form-item label="购买金额(元)" label-width="120px" prop="cost">
+          <el-input v-model.number="form.cost" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="车辆型号" label-width="120px">
+        <el-form-item label="车辆型号" label-width="120px" prop="typenumber">
           <el-input v-model="form.typenumber" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="载重量(吨)" label-width="120px">
+        <el-form-item label="载重量(吨)" label-width="120px" prop="capacity">
           <el-input v-model="form.capacity" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="行驶里程(千米)" label-width="120px">
+        <el-form-item label="行驶里程(公里)" label-width="120px">
           <el-input v-model="form.mileage" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -104,17 +108,21 @@
 <script>
 import { fetchList, createVehicle, updateVehicle } from "@/api/vehicles";
 import Pagination from "@/components/Pagination";
+import { parseTime } from "@/utils";
 
 export default {
   name: "VehiclesTable",
   components: { Pagination },
+  filters: {
+    parseTime
+  },
   data() {
     return {
       list: null,
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 10,
         age: undefined,
         platenumber: undefined,
         sort: "+id"
@@ -134,6 +142,37 @@ export default {
         typenumber: "",
         capacity: "",
         mileage: ""
+      },
+      rules: {
+        platenumber: [
+          { required: true, message: "请输入车牌号", trigger: "blur" },
+          {
+            pattern: /^(?:[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领 A-Z]{1}[A-HJ-NP-Z]{1}(?:(?:[0-9]{5}[DF])|(?:[DF](?:[A-HJ-NP-Z0-9])[0-9]{4})))|(?:[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领 A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9 挂学警港澳]{1})$/,
+            message: "车牌号格式不对",
+            trigger: "blur"
+          }
+        ],
+        buytime: [
+          { required: true, message: "请选择购买时间", trigger: "blur" }
+        ],
+        cost: [
+          {
+            required: true,
+            type: "number",
+            message: "请输入购买金额",
+            trigger: "blur"
+          }
+        ],
+        typenumber: [
+          { required: true, message: "请输入车辆型号", trigger: "blur" }
+        ],
+        capacity: [
+          {
+            required: true,
+            message: "请输入载重量",
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
@@ -171,6 +210,9 @@ export default {
       this.resetForm();
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
+      this.$nextTick(() => {
+        this.$refs["ruleForm"].clearValidate();
+      });
     },
     resetForm() {
       this.form = {
@@ -183,11 +225,15 @@ export default {
       };
     },
     createData() {
-      this.form.id = parseInt(Math.random() * 100) + 1024;
-      createVehicle(this.form).then(() => {
-        this.list.unshift(this.form);
-        this.dialogFormVisible = false;
-        this.$message.success("创建成功！");
+      this.$refs["ruleForm"].validate(valid => {
+        if (valid) {
+          this.form.id = parseInt(Math.random() * 100) + 1024;
+          createVehicle(this.form).then(() => {
+            this.list.unshift(this.form);
+            this.dialogFormVisible = false;
+            this.$message.success("创建成功！");
+          });
+        }
       });
     },
     handleDelete(row, index) {
@@ -198,13 +244,20 @@ export default {
       this.form = { ...row };
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["ruleForm"].clearValidate();
+      });
     },
     updateData() {
-      updateVehicle(this.form).then(() => {
-        const index = this.list.findIndex(item => item.id === this.form.id);
-        this.list.splice(index, 1, this.form);
-        this.dialogFormVisible = false;
-        this.$message.success("修改成功！");
+      this.$refs["ruleForm"].validate(valid => {
+        if (valid) {
+          updateVehicle(this.form).then(() => {
+            const index = this.list.findIndex(item => item.id === this.form.id);
+            this.list.splice(index, 1, this.form);
+            this.dialogFormVisible = false;
+            this.$message.success("修改成功！");
+          });
+        }
       });
     }
   }

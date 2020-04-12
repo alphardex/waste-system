@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">欢迎来到徐州市垃圾分类收运系统，{{ name }}</div>
+    <div class="dashboard-text">欢迎使用徐州市垃圾分类收运系统，{{ name }}</div>
   </div>
 </template>
 

@@ -64,21 +64,8 @@ export const constantRoutes = [{
       name: "Disposal",
       component: () => import("@/views/disposal/index"),
       meta: {
-        title: "投放点信息",
+        title: "垃圾点信息管理",
         icon: "trash"
-      }
-    }]
-  },
-  {
-    path: '/drivers',
-    component: Layout,
-    children: [{
-      path: "index",
-      name: "Drivers",
-      component: () => import("@/views/drivers/index"),
-      meta: {
-        title: '驾驶员信息',
-        icon: 'user'
       }
     }]
   },
@@ -90,8 +77,21 @@ export const constantRoutes = [{
       name: "Vehicles",
       component: () => import("@/views/vehicles/index"),
       meta: {
-        title: '垃圾车信息',
+        title: '垃圾车信息管理',
         icon: 'truck'
+      }
+    }]
+  },
+  {
+    path: '/drivers',
+    component: Layout,
+    children: [{
+      path: "index",
+      name: "Drivers",
+      component: () => import("@/views/drivers/index"),
+      meta: {
+        title: '驾驶员信息管理',
+        icon: 'user'
       }
     }]
   },
