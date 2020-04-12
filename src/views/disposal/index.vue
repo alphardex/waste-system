@@ -178,7 +178,7 @@ export default {
       this.markers.forEach(item => item.on('click', e => {
         const title = e.target.getTitle()
         const id = parseInt(title.split('\n')[0].slice(3))
-        const row = this.activePoints.find(item => item.id === id)
+        const row = this.activePoints[id - 1]
         this.form = { ...row }
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -222,7 +222,7 @@ export default {
           const index = this.points.findIndex(item => item.id === this.form.id)
           this.points.splice(index, 1, this.form)
           this.activePoints = [...this.points]
-          this.updateMap(this.activePoints)
+          this.handleFilter()
           this.dialogFormVisible = false
           this.$message.success('修改成功！')
         }
