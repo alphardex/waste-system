@@ -1,12 +1,16 @@
 import Mock from 'mockjs'
-import { param2Obj } from '../src/utils'
+import {
+  param2Obj
+} from '../src/utils'
 
 import user from './user'
-import table from './table'
+import drivers from './drivers'
+import vehicles from "./vehicles"
 
 const mocks = [
   ...user,
-  ...table
+  ...drivers,
+  ...vehicles
 ]
 
 // for front mock
@@ -16,7 +20,7 @@ export function mockXHR() {
   // mock patch
   // https://github.com/nuysoft/Mock/issues/300
   Mock.XHR.prototype.proxy_send = Mock.XHR.prototype.send
-  Mock.XHR.prototype.send = function() {
+  Mock.XHR.prototype.send = function () {
     if (this.custom.xhr) {
       this.custom.xhr.withCredentials = this.withCredentials || false
 
@@ -28,10 +32,14 @@ export function mockXHR() {
   }
 
   function XHR2ExpressReqWrap(respond) {
-    return function(options) {
+    return function (options) {
       let result = null
       if (respond instanceof Function) {
-        const { body, type, url } = options
+        const {
+          body,
+          type,
+          url
+        } = options
         // https://expressjs.com/en/4x/api.html#req
         result = respond({
           method: type,
