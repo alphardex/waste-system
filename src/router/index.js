@@ -91,7 +91,7 @@ export const constantRoutes = [{
       component: () => import("@/views/drivers/index"),
       meta: {
         title: '驾驶员信息管理',
-        icon: 'user'
+        icon: 'driver'
       }
     }]
   },

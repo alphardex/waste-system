@@ -28,8 +28,8 @@
           :label="item.label"
         ></el-option>
       </el-select>
-      <el-button type="primary" icon="el-icon-edit" @click="handleCreate"
-        >新建</el-button
+      <el-button type="primary" icon="el-icon-plus" @click="handleCreate"
+        >添加</el-button
       >
     </div>
     <el-table
@@ -59,15 +59,20 @@
       <el-table-column label="驾驶证" prop="license"></el-table-column>
       <el-table-column label="车牌号" prop="platenumber"></el-table-column>
       <el-table-column label="违章次数" prop="violation"></el-table-column>
-      <el-table-column label="操作" align="center" width="160">
+      <el-table-column label="操作" align="center" width="200">
         <template slot-scope="{ row, $index }">
-          <el-button size="mini" type="primary" @click="handleUpdate(row)"
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleUpdate(row)"
+            icon="el-icon-edit"
             >修改</el-button
           >
           <el-button
             size="mini"
             type="danger"
             @click="handleDelete(row, $index)"
+            icon="el-icon-delete"
             >删除</el-button
           >
         </template>
@@ -80,7 +85,10 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     ></Pagination>
-    <el-dialog title="新建驾驶员" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="dialogStatus === 'create' ? '添加驾驶员信息' : '修改驾驶员信息'"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form :model="form" :rules="rules" ref="ruleForm">
         <el-form-item label="姓名" label-width="120px" prop="name">
           <el-input v-model="form.name" autocomplete="off"></el-input>

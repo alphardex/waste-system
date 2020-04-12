@@ -9,7 +9,7 @@
       accept=".csv"
       class="dot-reader"
     >
-      <el-button size="small" type="primary">批量导入点坐标</el-button>
+      <el-button type="primary">批量导入点坐标</el-button>
     </el-upload>
   </div>
 </template>
