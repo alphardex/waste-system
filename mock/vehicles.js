@@ -1,20 +1,20 @@
-import Mock from "mockjs";
+import Mock from 'mockjs'
 
 const data = Mock.mock({
-  "items|500": [{
-    id: "@increment",
+  'items|500': [{
+    id: '@increment',
     platenumber: /[苏][A-N]\d{5}/,
-    buytime: "@date",
-    cost: "@integer(50000, 200000)",
-    typenumber: "@word(10)",
-    capacity: "@float(1.5, 5, 1, 1)",
-    mileage: "@integer(0, 1000)"
+    buytime: '@date',
+    cost: '@integer(50000, 200000)',
+    typenumber: '@word(10)',
+    capacity: '@float(1.5, 5, 1, 1)',
+    mileage: '@integer(0, 1000)'
   }]
-});
+})
 
 export default [{
-  url: "/vue-admin-template/vehicles/list",
-  type: "get",
+  url: '/vue-admin-template/vehicles/list',
+  type: 'get',
   response: config => {
     const {
       page,
@@ -22,14 +22,14 @@ export default [{
       age,
       platenumber,
       sort
-    } = config.query;
+    } = config.query
 
-    const items = data.items;
+    const items = data.items
 
     let filteredItems = items.filter(item => {
-      let buyYear = parseInt(item.buytime.slice(0, 4));
-      let nowYear = new Date().getFullYear();
-      let timeDelta = nowYear - buyYear;
+      const buyYear = parseInt(item.buytime.slice(0, 4))
+      const nowYear = new Date().getFullYear()
+      const timeDelta = nowYear - buyYear
       if (age && parseInt(age) !== timeDelta) {
         return false
       }
@@ -37,7 +37,7 @@ export default [{
         return false
       }
       return true
-    });
+    })
 
     if (sort === '-id') {
       filteredItems = filteredItems.reverse()
@@ -51,7 +51,7 @@ export default [{
         total: filteredItems.length,
         items: pageList
       }
-    };
+    }
   }
 }, {
   url: '/vue-admin-template/vehicles/create',
@@ -71,4 +71,4 @@ export default [{
       data: 'success'
     }
   }
-}];
+}]
