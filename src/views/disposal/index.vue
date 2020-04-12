@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div id="container"></div>
-    <div class="filter-container">
+    <div class="dot-import">
       <el-upload
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-change="handleChange"
@@ -18,7 +18,7 @@
       >
     </div>
     <div class="weight-range-control">
-      <span>垃圾点重量范围</span
+      <span>投放点重量范围(吨)</span
       ><el-slider
         v-model="weightRange"
         range
@@ -26,18 +26,22 @@
       ></el-slider>
     </div>
     <div class="vehicle-control">
-      <span class="form-control-label">车辆行驶速度(公里/小时)</span>
-      <el-input-number
-        v-model="vehicleSpeed"
-        :min="0"
-        :max="120"
-      ></el-input-number>
-      <span class="form-control-label">车辆最大载重(吨)</span>
-      <el-input-number
-        v-model="vehicleCapacity"
-        :min="0"
-        :max="20"
-      ></el-input-number>
+      <div class="form-group">
+        <span class="form-control-label">车辆行驶速度(公里/小时)</span>
+        <el-input-number
+          v-model="vehicleSpeed"
+          :min="0"
+          :max="120"
+        ></el-input-number>
+      </div>
+      <div class="form-group">
+        <span class="form-control-label">车辆最大载重(吨)</span>
+        <el-input-number
+          v-model="vehicleCapacity"
+          :min="0"
+          :max="20"
+        ></el-input-number>
+      </div>
     </div>
     <el-table
       v-loading="listLoading"
@@ -146,13 +150,19 @@ export default {
         .split("\n")
         .map(v => v.split(delimiter));
     },
-    setMarkers(points) {
-      return points.map((item, i) => {
-        return new AMap.Marker({
-          position: new AMap.LngLat(item.x, item.y),
-          title: `投放点${i + 1}\n重量: ${item.weight}吨`
-        });
+    updateMap(points) {
+      this.map.clearMap();
+      let markers = points.map((item, i) => {
+        if (item.x === "nan" || item.y === "nan") {
+          return undefined;
+        } else {
+          return new AMap.Marker({
+            position: new AMap.LngLat(item.x, item.y),
+            title: `投放点${i + 1}\n重量: ${item.weight}吨`
+          });
+        }
       });
+      this.map.add(markers);
     },
     handleSuccess() {
       this.$message.success("点坐标导入成功！");
@@ -173,11 +183,6 @@ export default {
       this.points = [];
       this.cachedPoints = [];
       this.$message.success("点坐标已清空！");
-    },
-    updateMap(points) {
-      this.map.clearMap();
-      let markers = this.setMarkers(points);
-      this.map.add(markers);
     },
     handleUpdate(row) {
       this.form = { ...row };
@@ -209,21 +214,42 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app-container {
+  display: grid;
+  gap: 1rem;
+  padding: 20px;
+}
+
+.dot-import {
+  display: flex;
+}
+
 #container {
-  width: 1160px;
+  width: 100%;
   height: 300px;
-  margin-bottom: 1rem;
 }
 
 .clear {
-  margin-left: 10px;
+  margin-left: 0.5rem;
+}
+
+.weight-range-control {
+  display: flex;
+  align-items: center;
+
+  .el-slider {
+    width: 300px;
+    margin-left: 1.5rem;
+  }
 }
 
 .vehicle-control {
-  margin-bottom: 10px;
-}
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 
-.form-control-label {
-  margin-right: 10px;
+  .form-control-label {
+    margin-right: 1rem;
+  }
 }
 </style>

@@ -64,7 +64,7 @@ export const constantRoutes = [{
       name: "Disposal",
       component: () => import("@/views/disposal/index"),
       meta: {
-        title: "垃圾点管理",
+        title: "投放点管理",
         icon: "trash"
       }
     }]
