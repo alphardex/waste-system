@@ -11,13 +11,18 @@
         accept=".csv,.txt"
         class="dot-reader"
       >
-        <el-button type="primary">批量导入点坐标</el-button>
+        <el-button type="primary" icon="el-icon-add-location">导入点坐标</el-button>
       </el-upload>
       <el-button
         type="primary"
         class="clear"
+        icon="el-icon-delete-location"
         @click="handleClear"
       >清空点坐标</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-s-order"
+      >安排运输任务</el-button>
     </div>
     <div class="weight-range-control">
       <span>投放点重量范围(吨)</span>
@@ -61,7 +66,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="修改点信息" :visible.sync="dialogFormVisible">
+    <el-dialog :title="'修改投放点' + form.id + '信息'" :visible.sync="dialogFormVisible">
       <el-form ref="ruleForm" :model="form" :rules="rules">
         <el-form-item label="X" label-width="120px" prop="x">
           <el-input v-model="form.x" auto-complete="off" />
@@ -88,6 +93,7 @@ export default {
       map: null,
       points: [],
       activePoints: [],
+      markers: [],
       listLoading: false,
       weightRange: [0, 100],
       vehicleSpeed: 40,
@@ -143,7 +149,7 @@ export default {
           id: i + 1,
           x: item[0],
           y: item[1],
-          weight: (Math.random() * 100).toFixed(1)
+          weight: 0
         }))
         this.points = points
         this.activePoints = [...points]
@@ -168,6 +174,17 @@ export default {
           })
         }
       })
+      this.markers = markers
+      this.markers.forEach(item => item.on('click', e => {
+        const title = e.target.getTitle()
+        const id = parseInt(title.split('\n')[0].slice(3))
+        const row = this.activePoints.find(item => item.id === id)
+        this.form = { ...row }
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['ruleForm'].clearValidate()
+        })
+      }))
       this.map.add(markers)
     },
     handleSuccess() {
