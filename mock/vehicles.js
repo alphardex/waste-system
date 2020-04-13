@@ -7,7 +7,7 @@ const data = Mock.mock({
     buytime: '@date',
     cost: '@integer(50000, 200000)',
     typenumber: '@word(10)',
-    capacity: '@float(1.5, 5, 1, 1)',
+    capacity: '30',
     mileage: '@integer(0, 1000)'
   }]
 })

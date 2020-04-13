@@ -14,29 +14,15 @@
         <el-button type="primary" icon="el-icon-add-location">导入点坐标</el-button>
       </el-upload>
       <el-button
-        type="primary"
+        type="danger"
         class="clear"
         icon="el-icon-delete-location"
         @click="handleClear"
       >清空点坐标</el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-s-order"
-      >安排运输任务</el-button>
     </div>
     <div class="weight-range-control">
-      <span>投放点重量范围(吨)</span>
+      <span>以重量范围(吨)来筛选投放点</span>
       <el-slider v-model="weightRange" range @change="handleFilter" />
-    </div>
-    <div class="vehicle-control">
-      <div class="form-group">
-        <span class="form-control-label">车辆行驶速度(公里/小时)</span>
-        <el-input-number v-model="vehicleSpeed" :min="0" :max="120" />
-      </div>
-      <div class="form-group">
-        <span class="form-control-label">车辆最大载重(吨)</span>
-        <el-input-number v-model="vehicleCapacity" :min="0" :max="20" />
-      </div>
     </div>
     <el-table
       v-loading="listLoading"
@@ -96,8 +82,6 @@ export default {
       markers: [],
       listLoading: false,
       weightRange: [0, 100],
-      vehicleSpeed: 40,
-      vehicleCapacity: 8,
       dialogFormVisible: false,
       form: {
         id: null,
@@ -265,16 +249,6 @@ export default {
   .el-slider {
     width: 300px;
     margin-left: 1.5rem;
-  }
-}
-
-.vehicle-control {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-
-  .form-control-label {
-    margin-right: 1rem;
   }
 }
 </style>
