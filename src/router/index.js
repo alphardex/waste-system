@@ -95,6 +95,19 @@ export const constantRoutes = [{
     }
   }]
 },
+{
+  path: '/procedure',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'procedure',
+    component: () => import('@/views/procedure/index'),
+    meta: {
+      title: '垃圾收运流程',
+      icon: 'procedure'
+    }
+  }]
+},
 // 404 page must be placed at the end !!!
 {
   path: '*',

@@ -20,6 +20,16 @@
         @click="handleClear"
       >清空点坐标</el-button>
     </div>
+    <div class="vehicle-control">
+      <el-switch
+        v-model="addVehicle"
+        class="add-vehicle"
+        active-text="添加垃圾车模式"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        @change="handleVehicleMode"
+      />
+    </div>
     <div class="weight-range-control">
       <span>以重量范围(吨)来筛选投放点</span>
       <el-slider v-model="weightRange" range @change="handleFilter" />
@@ -83,6 +93,9 @@ export default {
       listLoading: false,
       weightRange: [0, 100],
       dialogFormVisible: false,
+      addVehicle: false,
+      clickListener: null,
+      vehicleMarkers: [],
       form: {
         id: null,
         x: '',
@@ -217,29 +230,42 @@ export default {
       this.points.splice(index, 1)
       this.activePoints = [...this.points]
       this.updateMap(this.activePoints)
+    },
+    handleVehicleMode(value) {
+      if (value) {
+        this.clickListener = AMap.event.addListener(this.map, 'click', e => {
+          const marker = new AMap.Marker({
+            position: e.lnglat,
+            map: this.map,
+            title: `垃圾车${this.vehicleMarkers.length + 1}`,
+            content: '<svg t="1586833533591" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1940" width="24" height="24"><path d="M672 400h80v352h-80z" fill="#5C546A" p-id="1941"></path><path d="M960 784H64c-17.674 0-32-14.326-32-32v-32h960v32c0 17.674-14.326 32-32 32z" fill="#5C546A" p-id="1942"></path><path d="M984.062 494.918l-155.766-217.16A16.016 16.016 0 0 0 816 272h-64c-8.844 0-16 7.164-16 16v432c0 8.836 7.156 16 16 16h224c26.468 0 48-21.532 48-48v-145.762c0-23.726-17.296-43.484-39.938-47.32z" fill="#FF4F19" p-id="1943"></path><path d="M893.404 288c20.66 0 39.004 13.22 45.536 32.822l45.122 174.096s-115.088-23.386-148.982-32.68C814.286 456.538 800 437.56 800 416v-128h93.404z" fill="#5C546A" p-id="1944"></path><path d="M800 304c-8.844 0-16-7.164-16-16v-76.118c0-8.54-3.328-16.578-9.376-22.632l-17.938-17.938c-6.25-6.25-6.25-16.376 0-22.626s16.376-6.25 22.626 0l17.938 17.938c12.094 12.102 18.75 28.172 18.75 45.258V288c0 8.836-7.156 16-16 16z" fill="#8A8895" p-id="1945"></path><path d="M656 208H48c-26.468 0-48 21.532-48 48v432c0 26.468 21.532 48 48 48h640c8.844 0 16-7.164 16-16V256c0-26.468-21.532-48-48-48z" fill="#527991" p-id="1946"></path><path d="M0 688c0 26.468 21.532 48 48 48h640c8.844 0 16-7.164 16-16v-112H0v80z" fill="#5D647F" p-id="1947"></path><path d="M496 816h-128c-17.674 0-32-14.326-32-32v-32c0-17.674 14.326-32 32-32h128c17.674 0 32 14.326 32 32v32c0 17.674-14.326 32-32 32z" fill="#8A8895" p-id="1948"></path><path d="M384 784c-4.156 0-8.328-1.766-11.36-4.64-2.89-3.04-4.64-7.204-4.64-11.36 0-4.164 1.75-8.32 4.64-11.36 6.078-5.922 16.796-5.922 22.718 0 2.876 3.04 4.64 7.196 4.64 11.36 0 4.156-1.766 8.32-4.796 11.36-2.89 2.874-7.046 4.64-11.202 4.64z" fill="#5C546A" p-id="1949"></path><path d="M968 608c-13.254 0-24 10.746-24 24s10.746 24 24 24h24v-48h-24z" fill="#FFD100" p-id="1950"></path><path d="M192 768m-112 0a112 112 0 1 0 224 0 112 112 0 1 0-224 0Z" fill="#5C546A" p-id="1951"></path><path d="M192 768m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="#8A8895" p-id="1952"></path><path d="M832 768m-112 0a112 112 0 1 0 224 0 112 112 0 1 0-224 0Z" fill="#5C546A" p-id="1953"></path><path d="M832 768m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="#8A8895" p-id="1954"></path><path d="M992 608h32v48h-32z" fill="#FFFFFF" p-id="1955"></path><path d="M944 272h-192a16 16 0 0 0-16 16v16h208c8.844 0 16-7.164 16-16s-7.156-16-16-16z" fill="#E7001E" p-id="1956"></path></svg>',
+            offset: new AMap.Pixel(-12, -12),
+            draggable: true
+          })
+          this.vehicleMarkers.push(marker)
+          this.map.add(marker)
+        })
+      } else {
+        AMap.event.removeListener(this.clickListener)
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.app-container {
-  display: grid;
-  gap: 1rem;
-  padding: 20px;
-}
-
 .dot-import {
   display: flex;
+  align-items: center;
+
+  & > * {
+    margin-right: 0.5rem;
+  }
 }
 
 #container {
   width: 100%;
   height: 300px;
-}
-
-.clear {
-  margin-left: 0.5rem;
 }
 
 .weight-range-control {
