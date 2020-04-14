@@ -5,8 +5,6 @@
       <el-upload
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-change="handleChange"
-        :on-success="handleSuccess"
-        :on-error="handleError"
         :show-file-list="false"
         accept=".csv,.txt"
         class="dot-reader"
@@ -202,10 +200,12 @@ export default {
       this.markers.forEach(item => item.on('click', e => this.handleClickMarker(e)))
       this.map.add(markers)
     },
+    getMarkerId(marker) {
+      return parseInt(marker.getTitle().slice(3))
+    },
     handleClickMarker(e) {
       const marker = e.target
-      const title = marker.getTitle()
-      const id = parseInt(title.split('\n')[0].slice(3))
+      const id = this.getMarkerId(marker)
       const row = this.markers[id - 1]
       if (this.selectPointMode) {
         if (!this.selectedPoints.includes(row)) {
@@ -216,7 +216,8 @@ export default {
           this.selectedPoints = this.selectedPoints.filter(item => item !== row)
         }
       } else {
-        this.form = { ...row }
+        const data = this.activePoints[id - 1]
+        this.form = { ...data }
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['ruleForm'].clearValidate()
@@ -225,8 +226,7 @@ export default {
     },
     handleClickVehicleMarker(e) {
       const vehicleMarker = e.target
-      const title = vehicleMarker.getTitle()
-      const id = parseInt(title.slice(3))
+      const id = this.getMarkerId(vehicleMarker)
       const row = this.vehicleMarkers[id - 1]
       if (this.selectPointMode) {
         if (!this.selectedPoints.includes(row)) {
@@ -237,12 +237,6 @@ export default {
           this.selectedPoints = this.selectedPoints.filter(item => item !== row)
         }
       }
-    },
-    handleSuccess() {
-      this.$message.success('点坐标导入成功！')
-    },
-    handleError() {
-      this.$message.error('点坐标导入失败！')
     },
     handleFilter() {
       this.activePoints = [...this.points].filter(
