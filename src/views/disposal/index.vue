@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div id="container" />
+    <div id="panel" />
     <div class="dot-import">
       <el-upload
         action="https://jsonplaceholder.typicode.com/posts/"
@@ -29,6 +30,12 @@
         icon="el-icon-delete-location"
         @click="handleClearSelectedPoints"
       >清空点选择</el-button>
+      <el-button
+        type="primary"
+        class="route-planning"
+        icon="el-icon-discover"
+        @click="handleRoutePlanning"
+      >路径规划</el-button>
       <el-button
         type="success"
         class="guide"
@@ -130,6 +137,7 @@ export default {
       selectPointMode: false,
       selectedPoints: [],
       driver: null,
+      truckDriving: null,
       form: {
         id: null,
         x: '',
@@ -162,11 +170,23 @@ export default {
     }
   },
   mounted() {
-    var map = new AMap.Map('container', {
+    const map = new AMap.Map('container', {
       zoom: 9, // 级别
       center: [117.154169953999997, 34.1823933254] // 中心点坐标
     })
     this.map = map
+    AMap.plugin('AMap.TruckDriving', () => {
+      const truckOptions = {
+        map: this.map,
+        policy: 0,
+        size: 1,
+        city: 'jiangsu',
+        panel: 'panel'
+      }
+      const truckDriving = new AMap.TruckDriving(truckOptions)
+      map.addControl(truckDriving)
+      this.truckDriving = truckDriving
+    })
     this.driver = new Driver()
   },
   methods: {
@@ -314,7 +334,8 @@ export default {
         this.$notify({
           title: '两点距离计算',
           message: '请先选中两个点',
-          type: 'info'
+          type: 'warning',
+          duration: 3000
         })
       } else {
         const [point1, point2] = this.selectedPoints
@@ -338,6 +359,27 @@ export default {
     handleGuide() {
       this.driver.defineSteps(steps)
       this.driver.start()
+    },
+    handleRoutePlanning() {
+      const path = this.selectedPoints.map(point => {
+        const pos = point.getPosition()
+        const [x, y] = [pos.lng, pos.lat]
+        return { 'lnglat': [x, y] }
+      })
+      if (path.length < 2) {
+        this.$notify({
+          title: '路径规划',
+          message: '请先选中两个以上的点',
+          type: 'warning',
+          duration: 3000
+        })
+        return
+      }
+      this.truckDriving.search(path, (status, result) => {
+        if (status === 'complete') {
+          this.$message.success('路径规划成功！')
+        }
+      })
     }
   }
 }
@@ -360,6 +402,21 @@ export default {
 #container {
   width: 100%;
   height: 300px;
+}
+
+#panel {
+  position: fixed;
+  background-color: white;
+  max-height: 90%;
+  overflow-y: auto;
+  top: 10px;
+  right: 10px;
+  width: 280px;
+}
+
+#panel .amap-lib-driving {
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .vehicle-control {

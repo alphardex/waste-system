@@ -43,7 +43,7 @@ const steps = [
     element: '.select-point-mode',
     popover: {
       title: '点选择',
-      description: '开启则能在地图上选中想要的点',
+      description: '开启则能在地图上选中想要的点（变绿）',
       position: 'bottom'
     }
   },
@@ -60,6 +60,14 @@ const steps = [
     popover: {
       title: '计算两点间距离',
       description: '计算选中的两点的距离',
+      position: 'bottom'
+    }
+  },
+  {
+    element: '.route-planning',
+    popover: {
+      title: '路径规划',
+      description: '规划选中点的路径（第一个必须是垃圾车）',
       position: 'bottom'
     }
   }
