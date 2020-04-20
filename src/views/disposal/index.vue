@@ -192,7 +192,12 @@ export default {
       map.addControl(truckDriving)
       this.truckDriving = truckDriving
     })
-    this.driver = new Driver()
+    this.driver = new Driver({
+      closeBtnText: '关闭',
+      prevBtnText: '后退',
+      nextBtnText: '前进',
+      doneBtnText: '结束'
+    })
   },
   methods: {
     handleChange(file, fileList) {
@@ -354,12 +359,6 @@ export default {
           duration: 0
         })
       }
-    },
-    handleClearSelectedPoints() {
-      this.$message.success('点选择已清空！')
-      this.selectedPoints = []
-      this.markers.forEach(marker => marker.setContent(DEFAULT_MARKER_ICON))
-      this.vehicleMarkers.forEach(marker => marker.setContent(DEFAULT_VEHICLE_ICON))
     },
     handleGuide() {
       this.driver.defineSteps(steps)
