@@ -1,8 +1,8 @@
 {
-  "name": "vue-admin-template",
-  "version": "4.2.1",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "waste-system",
+  "version": "1.0.0",
+  "description": "Waste Transportation Management System in Xuzhou City Based on Gaode API",
+  "author": "alphardex <2582347430@qq.com>",
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve",
