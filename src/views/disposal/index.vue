@@ -1,114 +1,118 @@
 <template>
   <div class="app-container">
-    <div id="container" />
-    <div id="panel" />
-    <div class="dot-import">
-      <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-change="handleChange"
-        :show-file-list="false"
-        accept=".csv,.txt"
-        class="dot-reader"
-      >
-        <el-button type="primary" icon="el-icon-add-location">导入点坐标</el-button>
-      </el-upload>
-      <el-button
-        type="danger"
-        class="clear"
-        icon="el-icon-delete-location"
-        @click="handleClear"
-      >清空点坐标</el-button>
-      <el-button
-        type="info"
-        class="calc-distance"
-        icon="el-icon-data-line"
-        @click="handleCalcDistance"
-      >计算两点间距离</el-button>
-      <el-button
-        type="danger"
-        class="clear-select"
-        icon="el-icon-delete-location"
-        @click="handleClearSelectedPoints"
-      >清空点选择</el-button>
-      <el-button
-        type="primary"
-        class="route-planning"
-        icon="el-icon-discover"
-        @click="handleRoutePlanning"
-      >路径规划</el-button>
-      <el-button
-        type="success"
-        class="guide"
-        icon="el-icon-question"
-        @click.prevent.stop="handleGuide"
-      >新手指引</el-button>
-    </div>
-    <div class="vehicle-control">
-      <el-switch
-        v-model="addVehicle"
-        class="add-vehicle"
-        active-text="添加垃圾车"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        @change="handleVehicleMode"
-      />
-      <el-switch
-        v-model="selectPointMode"
-        class="select-point-mode"
-        active-text="点选择"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-      />
-    </div>
-    <div class="weight-range-control">
-      <span>重量范围(吨)</span>
-      <el-slider v-model="weightRange" range @change="handleFilter" />
-    </div>
-    <el-table
-      v-loading="listLoading"
-      element-loading-text="拼命加载中"
-      :data="activePoints"
-      border
-      height="250"
-    >
-      <el-table-column label="ID" prop="id" />
-      <el-table-column label="X" prop="x" />
-      <el-table-column label="Y" prop="y" />
-      <el-table-column label="重量(吨)" prop="weight" />
-      <el-table-column label="操作" align="center" width="200">
-        <template slot-scope="{ row, $index }">
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-edit"
-            @click="handleUpdate(row)"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            icon="el-icon-delete"
-            @click="handleDelete(row, $index)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-dialog :title="'修改投放点' + form.id + '信息'" :visible.sync="dialogFormVisible">
-      <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="X" label-width="120px" prop="x">
-          <el-input v-model="form.x" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="Y" label-width="120px" prop="y">
-          <el-input v-model="form.y" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="重量(吨)" label-width="120px" prop="weight">
-          <el-input v-model="form.weight" auto-complete="off" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updateData">确 定</el-button>
+    <div id="operation-container">
+      <div class="dot-operations">
+        <el-upload
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-change="handleChange"
+          :show-file-list="false"
+          accept=".csv,.txt"
+          class="dot-reader"
+        >
+          <el-button size="mini" type="primary" icon="el-icon-add-location">导入点坐标</el-button>
+        </el-upload>
+        <el-button
+          size="mini"
+          type="danger"
+          class="clear"
+          icon="el-icon-delete-location"
+          @click="handleClear"
+        >清空点坐标</el-button>
+        <el-button
+          size="mini"
+          type="info"
+          class="calc-distance"
+          icon="el-icon-data-line"
+          @click="handleCalcDistance"
+        >计算两点间距离</el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          class="route-planning"
+          icon="el-icon-discover"
+          @click="handleRoutePlanning"
+        >路径规划</el-button>
+        <el-button
+          size="mini"
+          type="success"
+          class="guide"
+          icon="el-icon-question"
+          @click.prevent.stop="handleGuide"
+        >新手指引</el-button>
       </div>
-    </el-dialog>
+      <div class="vehicle-control">
+        <span>模式</span>
+        <el-switch
+          v-model="addVehicle"
+          class="add-vehicle"
+          active-text="添加垃圾车"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          @change="handleVehicleMode"
+        />
+        <el-switch
+          v-model="selectPointMode"
+          class="select-point-mode"
+          active-text="点选择"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        />
+      </div>
+      <div class="weight-range-control">
+        <span>重量范围(吨)</span>
+        <el-slider v-model="weightRange" range @change="handleFilter" />
+      </div>
+      <el-table
+        v-loading="listLoading"
+        element-loading-text="拼命加载中"
+        :data="activePoints"
+        border
+        height="250"
+        size="mini"
+      >
+        <el-table-column label="ID" prop="id" />
+        <el-table-column label="X" prop="x" />
+        <el-table-column label="Y" prop="y" />
+        <el-table-column label="重量(吨)" prop="weight" />
+        <el-table-column label="操作" align="center" width="200">
+          <template slot-scope="{ row, $index }">
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-edit"
+              @click="handleUpdate(row)"
+            >修改</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="handleDelete(row, $index)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog :title="'修改投放点' + form.id + '信息'" :visible.sync="dialogFormVisible">
+        <el-form ref="ruleForm" :model="form" :rules="rules">
+          <el-form-item label="X" label-width="120px" prop="x">
+            <el-input v-model="form.x" auto-complete="off" />
+          </el-form-item>
+          <el-form-item label="Y" label-width="120px" prop="y">
+            <el-input v-model="form.y" auto-complete="off" />
+          </el-form-item>
+          <el-form-item label="重量(吨)" label-width="120px" prop="weight">
+            <el-input v-model="form.weight" auto-complete="off" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="updateData">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+    <div id="map-container">
+      <div id="container" />
+      <div id="panel" />
+    </div>
   </div>
 </template>
 
@@ -172,7 +176,8 @@ export default {
   mounted() {
     const map = new AMap.Map('container', {
       zoom: 9, // 级别
-      center: [117.154169953999997, 34.1823933254] // 中心点坐标
+      center: [117.154169953999997, 34.1823933254], // 中心点坐标,
+      reiszeEnable: true
     })
     this.map = map
     AMap.plugin('AMap.TruckDriving', () => {
@@ -386,22 +391,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dot-import {
-  display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: 0.5rem;
-  }
-
-  .dot-reader {
-    margin-right: 1rem;
-  }
+.app-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  height: 557px;
+  overflow-y: hidden;
 }
 
 #container {
   width: 100%;
-  height: 300px;
+  height: 100%;
+}
+
+#operation-container {
+  display: grid;
+  padding: 20px;
+  align-items: center;
 }
 
 #panel {
@@ -419,19 +424,34 @@ export default {
   overflow: hidden;
 }
 
+.dot-operations {
+  display: flex;
+  align-items: center;
+}
+
+.dot-reader {
+  margin-right: 10px;
+}
+
 .vehicle-control {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+
     & > * {
-    margin-right: 0.5rem;
+    margin-right: 1rem;
   }
 }
 
 .weight-range-control {
   display: flex;
   align-items: center;
+  white-space: nowrap;
 
   .el-slider {
-    width: 300px;
+    width: 100%;
     margin-left: 1.5rem;
   }
 }
+
 </style>

@@ -271,6 +271,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app-container {
+  display: grid;
+  gap: 1rem;
+  padding: 20px;
+}
+
 .filter-container {
   & > * {
     margin-right: 0.5rem;

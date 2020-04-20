@@ -60,13 +60,7 @@ div:focus {
   }
 }
 
-// main-container global css
-.app-container {
-  display: grid;
-  gap: 1rem;
-  padding: 20px;
-}
-
+// global css
 .el-table th.gutter {
   display: table-cell !important;
 }

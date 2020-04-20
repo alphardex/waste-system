@@ -1,13 +1,5 @@
 const steps = [
   {
-    element: '#container',
-    popover: {
-      title: '地图',
-      description: '用于展示坐标点，单击点可编辑点信息',
-      position: 'bottom'
-    }
-  },
-  {
     element: '.dot-reader',
     popover: {
       title: '导入点坐标',
@@ -44,14 +36,6 @@ const steps = [
     popover: {
       title: '点选择',
       description: '开启则能在地图上选中想要的点（变绿）',
-      position: 'bottom'
-    }
-  },
-  {
-    element: '.clear-select',
-    popover: {
-      title: '清空点选择',
-      description: '取消选中的所有点',
       position: 'bottom'
     }
   },
