@@ -1,5 +1,13 @@
 const steps = [
   {
+    element: '#container',
+    popover: {
+      title: '地图',
+      description: '用于投放点的展示和交互',
+      position: 'left'
+    }
+  },
+  {
     element: '.dot-reader',
     popover: {
       title: '导入点坐标',
@@ -13,6 +21,14 @@ const steps = [
       title: '清空点坐标',
       description: '清空地图上所有的点',
       position: 'bottom'
+    }
+  },
+  {
+    element: '.dot-data',
+    popover: {
+      title: '投放点数据表',
+      description: '用来展示和操作导入的投放点数据',
+      position: 'top'
     }
   },
   {
@@ -53,6 +69,14 @@ const steps = [
       title: '路径规划',
       description: '规划选中点的路径（第一个必须是垃圾车）',
       position: 'bottom'
+    }
+  },
+  {
+    element: '.user-avatar',
+    popover: {
+      title: '功能菜单',
+      description: '各种功能（例如登出等）',
+      position: 'left'
     }
   }
 ]

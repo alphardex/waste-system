@@ -69,6 +69,7 @@
         border
         height="250"
         size="mini"
+        class="dot-data"
       >
         <el-table-column label="ID" prop="id" />
         <el-table-column label="X" prop="x" />
