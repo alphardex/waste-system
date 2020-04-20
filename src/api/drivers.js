@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/vue-admin-template/drivers/list',
+    url: '/waste-system/drivers/list',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function createDriver(data) {
   return request({
-    url: '/vue-admin-template/drivers/create',
+    url: '/waste-system/drivers/create',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function createDriver(data) {
 
 export function updateDriver(data) {
   return request({
-    url: '/vue-admin-template/drivers/update',
+    url: '/waste-system/drivers/update',
     method: 'post',
     data
   })

@@ -25,7 +25,7 @@ const users = {
 export default [
   // user login
   {
-    url: '/vue-admin-template/user/login',
+    url: '/waste-system/user/login',
     type: 'post',
     response: config => {
       const {
@@ -50,7 +50,7 @@ export default [
 
   // get user info
   {
-    url: '/vue-admin-template/user/info\.*',
+    url: '/waste-system/user/info\.*',
     type: 'get',
     response: config => {
       const {
@@ -75,7 +75,7 @@ export default [
 
   // user logout
   {
-    url: '/vue-admin-template/user/logout',
+    url: '/waste-system/user/logout',
     type: 'post',
     response: _ => {
       return {

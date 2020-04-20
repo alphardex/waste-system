@@ -18,7 +18,7 @@ const data = Mock.mock({
 
 export default [
   {
-    url: '/vue-admin-template/drivers/list',
+    url: '/waste-system/drivers/list',
     type: 'get',
     response: config => {
       const { page, limit, name, gender, sort } = config.query
@@ -53,7 +53,7 @@ export default [
     }
   },
   {
-    url: '/vue-admin-template/drivers/create',
+    url: '/waste-system/drivers/create',
     type: 'post',
     response: _ => {
       return {
@@ -63,7 +63,7 @@ export default [
     }
   },
   {
-    url: '/vue-admin-template/drivers/update',
+    url: '/waste-system/drivers/update',
     type: 'post',
     response: _ => {
       return {

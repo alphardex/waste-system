@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/vue-admin-template/vehicles/list',
+    url: '/waste-system/vehicles/list',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function createVehicle(data) {
   return request({
-    url: '/vue-admin-template/vehicles/create',
+    url: '/waste-system/vehicles/create',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function createVehicle(data) {
 
 export function updateVehicle(data) {
   return request({
-    url: '/vue-admin-template/vehicles/update',
+    url: '/waste-system/vehicles/update',
     method: 'post',
     data
   })

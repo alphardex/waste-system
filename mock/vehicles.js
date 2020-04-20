@@ -13,7 +13,7 @@ const data = Mock.mock({
 })
 
 export default [{
-  url: '/vue-admin-template/vehicles/list',
+  url: '/waste-system/vehicles/list',
   type: 'get',
   response: config => {
     const {
@@ -54,7 +54,7 @@ export default [{
     }
   }
 }, {
-  url: '/vue-admin-template/vehicles/create',
+  url: '/waste-system/vehicles/create',
   type: 'post',
   response: _ => {
     return {
@@ -63,7 +63,7 @@ export default [{
     }
   }
 }, {
-  url: '/vue-admin-template/vehicles/update',
+  url: '/waste-system/vehicles/update',
   type: 'post',
   response: _ => {
     return {
