@@ -9,9 +9,10 @@
           accept=".csv,.txt"
           class="dot-reader"
         >
-          <el-button size="mini" type="primary" icon="el-icon-add-location">导入点坐标</el-button>
+          <el-button round size="mini" type="primary" icon="el-icon-add-location">导入点坐标</el-button>
         </el-upload>
         <el-button
+          round
           size="mini"
           type="danger"
           class="clear"
@@ -19,6 +20,7 @@
           @click="handleClear"
         >清空点坐标</el-button>
         <el-button
+          round
           size="mini"
           type="info"
           class="calc-distance"
@@ -26,6 +28,7 @@
           @click="handleCalcDistance"
         >计算两点间距离</el-button>
         <el-button
+          round
           size="mini"
           type="primary"
           class="route-planning"
@@ -33,6 +36,7 @@
           @click="handleRoutePlanning"
         >路径规划</el-button>
         <el-button
+          round
           size="mini"
           type="success"
           class="guide"
@@ -41,25 +45,53 @@
         >新手指引</el-button>
       </div>
       <div class="vehicle-control">
-        <span>模式</span>
-        <el-switch
-          v-model="addVehicle"
-          class="add-vehicle"
-          active-text="添加垃圾车"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          @change="handleVehicleMode"
-        />
-        <el-switch
-          v-model="selectPointMode"
-          class="select-point-mode"
-          active-text="点选择"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-        />
+        <ul class="function-list">
+          <li class="function-list__item" style="--function-color: var(--danger-color);">
+            <div class="function">
+              <div class="function-icon">
+                <svg-icon icon-class="truck" />
+              </div>
+              <div class="function-menu">
+                <svg-icon icon-class="menu" />
+              </div>
+            </div>
+            <div class="function-data">
+              <div class="function-name">添加垃圾车模式</div>
+              <div class="function-switch">
+                <el-switch
+                  v-model="addVehicle"
+                  class="add-vehicle"
+                  active-color="var(--function-color)"
+                  inactive-color="var(--function-color)"
+                  @change="handleVehicleMode"
+                />
+              </div>
+            </div>
+          </li>
+          <li class="function-list__item" style="--function-color: var(--primary-color);">
+            <div class="function">
+              <div class="function-icon">
+                <svg-icon icon-class="marker" />
+              </div>
+              <div class="function-menu">
+                <svg-icon icon-class="menu" />
+              </div>
+            </div>
+            <div class="function-data">
+              <div class="function-name">点选择模式</div>
+              <div class="function-switch">
+                <el-switch
+                  v-model="selectPointMode"
+                  class="select-point-mode"
+                  active-color="var(--function-color)"
+                  inactive-color="var(--function-color)"
+                />
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
       <div class="weight-range-control">
-        <span>重量范围(吨)</span>
         <el-slider v-model="weightRange" range @change="handleFilter" />
       </div>
       <el-table
@@ -405,6 +437,7 @@ export default {
 
 #operation-container {
   display: grid;
+  gap: 1rem;
   padding: 20px;
   align-items: center;
 }
@@ -443,14 +476,91 @@ export default {
   }
 }
 
-.weight-range-control {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
+.function-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
 
-  .el-slider {
-    width: 100%;
-    margin-left: 1.5rem;
+  &__item {
+    padding: 4px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+
+    .function {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px;
+      color: white;
+      background: var(--function-color);
+      border-radius: 15px;
+    }
+
+    .function-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .function-data {
+      display: flex;
+      justify-content: space-between;
+      padding: 30px 16px 21px 16px;
+    }
+
+    .function-name {
+      margin-right: 22px;
+      white-space: nowrap;
+    }
+
+    .function-switch {
+      --switch-ball-color: var(--function-color);
+      --switch-checked-color: var(--function-color);
+      --border-color: var(--function-color);
+      --switch-hover-color: transparent;
+      --switch-disabled-checked-color: transparent;
+
+      &:checked {
+        --border-color: var(--function-color);
+      }
+    }
+
+    &.update-function {
+      &:hover {
+        box-shadow: 0 0 0 1px var(--secondary-color-darker);
+      }
+
+      .function-icon {
+        color: var(--secondary-color-darker);
+        background: white;
+      }
+
+      .function-menu {
+        color: var(--secondary-color-darker);
+      }
+
+      .function-switch {
+        --switch-ball-color: var(--secondary-color-darker);
+        --switch-checked-color: var(--secondary-color-darker);
+        --border-color: var(--secondary-color-darker);
+        --switch-hover-color: transparent;
+        --switch-disabled-checked-color: transparent;
+
+        &:checked {
+          --border-color: var(--secondary-color-darker);
+        }
+      }
+    }
   }
 }
 

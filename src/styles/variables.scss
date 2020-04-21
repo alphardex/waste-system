@@ -1,10 +1,34 @@
+:root {
+  --primary-color: hsl(196, 78%, 61%);
+  --success-color: hsl(165, 58%, 55%);
+  --info-color: hsl(214, 79%, 65%);
+  --warning-color: hsl(43, 100%, 66%);
+  --danger-color: hsl(354, 81%, 63%);
+  --primary-color-darker: hsl(196, 68%, 54%);
+  --success-color-darker: hsl(165, 55%, 48%);
+  --warning-color-darker: hsl(39, 97%, 62%);
+  --danger-color-darker: hsl(354, 67%, 56%);
+  --primary-color-lighter: hsl(196, 78%, 81%);
+  --secondary-color-lighter: hsl(214, 16%, 92%);
+  --success-color-lighter: hsl(165, 58%, 75%);
+  --warning-color-lighter: hsl(43, 100%, 86%);
+  --danger-color-lighter: hsl(354, 81%, 83%);
+  --secondary-color-lightest: hsl(220, 1%, 98%);
+  --secondary-color: hsl(240, 56%, 98%);
+  --secondary-color-darker: hsl(240, 56%, 90%);
+  --secondary-color-darkest: hsl(243, 24%, 43%);
+  --info-color-darker: rgb(51, 42, 124);
+  --info-color-darkest: rgb(30, 23, 90);
+  --info-color-lighter: rgb(92, 95, 178);
+}
+
 // sidebar
-$menuText:#bfcbd9;
-$menuActiveText:#409EFF;
+$menuText:white;
+$menuActiveText:var(--primary-color);
 $subMenuActiveText:#f4f4f5; //https://github.com/ElemeFE/element/issues/12951
 
-$menuBg:#304156;
-$menuHover:#263445;
+$menuBg:var(--info-color-darker);
+$menuHover:var(--info-color-darkest);
 
 $subMenuBg:#1f2d3d;
 $subMenuHover:#001528;
@@ -23,3 +47,13 @@ $sideBarWidth: 210px;
   subMenuHover: $subMenuHover;
   sideBarWidth: $sideBarWidth;
 }
+
+$--color-primary: hsl(196, 78%, 61%);
+$--color-info: hsl(214, 79%, 65%);
+$--color-success: hsl(165, 58%, 55%);
+$--color-warning: hsl(43, 100%, 66%);
+$--color-danger: hsl(354, 81%, 63%);
+
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+@import "~element-ui/packages/theme-chalk/src/index";

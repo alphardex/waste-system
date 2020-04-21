@@ -1,0 +1,10 @@
+digraph tree
+{
+    nodesep=0.2;
+    rankdir=LR;
+    fixedsize=true;
+    node [fontname="Microsoft YaHei", style="rounded,filled", width=0, height=0, shape=box, fillcolor="#E5E5E5", concentrate=true]
+    垃圾收运系统 -> 投放点管理, 垃圾车管理, 驾驶员管理
+    投放点管理 -> 导入点坐标, 修改点坐标, 筛选点坐标, 添加垃圾车, 选择点, 路径规划
+    垃圾车管理, 驾驶员管理 -> 增加数据, 查询数据, 修改数据, 删除数据
+}
