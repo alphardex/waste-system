@@ -453,9 +453,11 @@ export default {
 }
 
 #operation-container {
-  display: grid;
-  gap: 1rem;
   padding: 20px;
+
+  & > *:not(:first-child) {
+    margin-top: 1rem;
+  }
 }
 
 #panel {
