@@ -113,7 +113,7 @@ export default {
 
 .statistics-list {
   display: grid;
-  grid-template-columns: repeat(7, auto);
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 30px;
   padding: 0;
   margin: 0;
