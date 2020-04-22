@@ -494,6 +494,18 @@ export default {
 
     .dot-reader {
       margin-right: 0;
+
+      & >>> .el-upload {
+        display: block;
+      }
+    }
+
+    .el-upload {
+      width: 100%;
+
+      .el-button {
+        width: 100%;
+      }
     }
 
     .el-button {
@@ -504,12 +516,6 @@ export default {
 
 .dot-reader {
   margin-right: 10px;
-
-  @include sp-layout {
-    .el-button {
-      width: 122.5px;
-    }
-  }
 }
 
 .vehicle-control {
