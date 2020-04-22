@@ -456,6 +456,7 @@ export default {
   display: grid;
   gap: 1rem;
   padding: 20px;
+  max-width: 320px;
 }
 
 #panel {
