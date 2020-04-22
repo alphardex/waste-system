@@ -456,7 +456,6 @@ export default {
   display: grid;
   gap: 1rem;
   padding: 20px;
-  max-width: 320px;
 }
 
 #panel {
@@ -521,7 +520,7 @@ export default {
 
 .function-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   width: 100%;
   padding: 0;
