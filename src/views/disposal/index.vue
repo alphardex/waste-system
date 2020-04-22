@@ -45,50 +45,22 @@
         >新手指引</el-button>
       </div>
       <div class="vehicle-control">
-        <ul class="function-list">
-          <li class="function-list__item" style="--function-color: var(--danger-color);">
-            <div class="function">
-              <div class="function-icon">
-                <svg-icon icon-class="truck" />
-              </div>
-              <div class="function-menu">
-                <svg-icon icon-class="menu" />
-              </div>
-            </div>
-            <div class="function-data">
-              <div class="function-name">添加垃圾车模式</div>
-              <div class="function-switch">
-                <el-switch
-                  v-model="addVehicle"
-                  class="add-vehicle"
-                  active-color="var(--function-color)"
-                  inactive-color="var(--function-color)"
-                  @change="handleVehicleMode"
-                />
-              </div>
-            </div>
-          </li>
-          <li class="function-list__item" style="--function-color: var(--primary-color);">
-            <div class="function">
-              <div class="function-icon">
-                <svg-icon icon-class="marker" />
-              </div>
-              <div class="function-menu">
-                <svg-icon icon-class="menu" />
-              </div>
-            </div>
-            <div class="function-data">
-              <div class="function-name">点选择模式</div>
-              <div class="function-switch">
-                <el-switch
-                  v-model="selectPointMode"
-                  class="select-point-mode"
-                  active-color="var(--function-color)"
-                  inactive-color="var(--function-color)"
-                />
-              </div>
-            </div>
-          </li>
+        <ul class="switch-panel-list">
+          <SwitchPanel icon="truck" name="添加垃圾车模式" type="danger">
+            <el-switch
+              v-model="addVehicleMode"
+              active-color="var(--switch-panel-color)"
+              inactive-color="var(--switch-panel-color)"
+              @change="handleVehicleMode"
+            />
+          </SwitchPanel>
+          <SwitchPanel icon="marker" name="点选择模式" type="primary">
+            <el-switch
+              v-model="selectPointMode"
+              active-color="var(--switch-panel-color)"
+              inactive-color="var(--switch-panel-color)"
+            />
+          </SwitchPanel>
         </ul>
       </div>
       <div class="weight-range-control">
@@ -145,6 +117,7 @@
 </template>
 
 <script>
+import SwitchPanel from '@/components/SwitchPanel'
 import Driver from 'driver.js'
 import 'driver.js/dist/driver.min.css'
 import steps from './steps'
@@ -158,6 +131,9 @@ const SELECTED_VEHICLE_ICON =
   '<svg t="1586841754209" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1826" width="24" height="24"><path d="M672 400h80v352h-80z" fill="#5C546A" p-id="1827"></path><path d="M960 784H64c-17.674 0-32-14.326-32-32v-32h960v32c0 17.674-14.326 32-32 32z" fill="#5C546A" p-id="1828"></path><path d="M984.062 494.918l-155.766-217.16A16.016 16.016 0 0 0 816 272h-64c-8.844 0-16 7.164-16 16v432c0 8.836 7.156 16 16 16h224c26.468 0 48-21.532 48-48v-145.762c0-23.726-17.296-43.484-39.938-47.32z" fill="#FF4F19" p-id="1829"></path><path d="M893.404 288c20.66 0 39.004 13.22 45.536 32.822l45.122 174.096s-115.088-23.386-148.982-32.68C814.286 456.538 800 437.56 800 416v-128h93.404z" fill="#5C546A" p-id="1830"></path><path d="M800 304c-8.844 0-16-7.164-16-16v-76.118c0-8.54-3.328-16.578-9.376-22.632l-17.938-17.938c-6.25-6.25-6.25-16.376 0-22.626s16.376-6.25 22.626 0l17.938 17.938c12.094 12.102 18.75 28.172 18.75 45.258V288c0 8.836-7.156 16-16 16z" fill="#8A8895" p-id="1831"></path><path d="M656 208H48c-26.468 0-48 21.532-48 48v432c0 26.468 21.532 48 48 48h640c8.844 0 16-7.164 16-16V256c0-26.468-21.532-48-48-48z" fill="#1afa29" p-id="1832" data-spm-anchor-id="a313x.7781069.0.i2" class="selected"></path><path d="M0 688c0 26.468 21.532 48 48 48h640c8.844 0 16-7.164 16-16v-112H0v80z" fill="#5D647F" p-id="1833" data-spm-anchor-id="a313x.7781069.0.i3" class="selected"></path><path d="M496 816h-128c-17.674 0-32-14.326-32-32v-32c0-17.674 14.326-32 32-32h128c17.674 0 32 14.326 32 32v32c0 17.674-14.326 32-32 32z" fill="#8A8895" p-id="1834"></path><path d="M384 784c-4.156 0-8.328-1.766-11.36-4.64-2.89-3.04-4.64-7.204-4.64-11.36 0-4.164 1.75-8.32 4.64-11.36 6.078-5.922 16.796-5.922 22.718 0 2.876 3.04 4.64 7.196 4.64 11.36 0 4.156-1.766 8.32-4.796 11.36-2.89 2.874-7.046 4.64-11.202 4.64z" fill="#5C546A" p-id="1835"></path><path d="M968 608c-13.254 0-24 10.746-24 24s10.746 24 24 24h24v-48h-24z" fill="#FFD100" p-id="1836"></path><path d="M192 768m-112 0a112 112 0 1 0 224 0 112 112 0 1 0-224 0Z" fill="#5C546A" p-id="1837"></path><path d="M192 768m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="#8A8895" p-id="1838"></path><path d="M832 768m-112 0a112 112 0 1 0 224 0 112 112 0 1 0-224 0Z" fill="#5C546A" p-id="1839"></path><path d="M832 768m-64 0a64 64 0 1 0 128 0 64 64 0 1 0-128 0Z" fill="#8A8895" p-id="1840"></path><path d="M992 608h32v48h-32z" fill="#FFFFFF" p-id="1841"></path><path d="M944 272h-192a16 16 0 0 0-16 16v16h208c8.844 0 16-7.164 16-16s-7.156-16-16-16z" fill="#E7001E" p-id="1842"></path></svg>'
 
 export default {
+  components: {
+    SwitchPanel
+  },
   data() {
     return {
       map: null,
@@ -167,7 +143,7 @@ export default {
       listLoading: false,
       weightRange: [0, 100],
       dialogFormVisible: false,
-      addVehicle: false,
+      addVehicleMode: false,
       clickListener: null,
       vehicleMarkers: [],
       selectPointMode: false,
@@ -520,7 +496,7 @@ export default {
   }
 }
 
-.function-list {
+.switch-panel-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
@@ -528,83 +504,5 @@ export default {
   padding: 0;
   margin: 0;
   list-style-type: none;
-
-  &__item {
-    padding: 4px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    transition: 0.3s;
-
-    .function {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px;
-      color: white;
-      background: var(--function-color);
-      border-radius: 15px;
-    }
-
-    .function-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-    }
-
-    .function-data {
-      display: flex;
-      justify-content: space-between;
-      padding: 30px 16px 21px 16px;
-    }
-
-    .function-name {
-      margin-right: 22px;
-      white-space: nowrap;
-    }
-
-    .function-switch {
-      --switch-ball-color: var(--function-color);
-      --switch-checked-color: var(--function-color);
-      --border-color: var(--function-color);
-      --switch-hover-color: transparent;
-      --switch-disabled-checked-color: transparent;
-
-      &:checked {
-        --border-color: var(--function-color);
-      }
-    }
-
-    &.update-function {
-      &:hover {
-        box-shadow: 0 0 0 1px var(--secondary-color-darker);
-      }
-
-      .function-icon {
-        color: var(--secondary-color-darker);
-        background: white;
-      }
-
-      .function-menu {
-        color: var(--secondary-color-darker);
-      }
-
-      .function-switch {
-        --switch-ball-color: var(--secondary-color-darker);
-        --switch-checked-color: var(--secondary-color-darker);
-        --border-color: var(--secondary-color-darker);
-        --switch-hover-color: transparent;
-        --switch-disabled-checked-color: transparent;
-
-        &:checked {
-          --border-color: var(--secondary-color-darker);
-        }
-      }
-    }
-  }
 }
 </style>

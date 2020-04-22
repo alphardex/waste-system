@@ -8,56 +8,14 @@
       <div class="section-titles">
         <div class="section-title">统计数据</div>
       </div>
-      <ul class="statistics-list">
-        <li class="statistics-list__item active" style="--statistics-color: var(--warning-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="trash" />
-          </div>
-          <div class="statistics-name">垃圾吨数</div>
-          <div class="statistics-size">{{ trashWeight }} 吨</div>
-        </li>
-        <li class="statistics-list__item active" style="--statistics-color: var(--success-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="marker" />
-          </div>
-          <div class="statistics-name">投放点数</div>
-          <div class="statistics-size">{{ disposalCount }} 个</div>
-        </li>
-        <li class="statistics-list__item" style="--statistics-color: var(--danger-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="truck" />
-          </div>
-          <div class="statistics-name">垃圾车数</div>
-          <div class="statistics-size">{{ vehicleCount }} 辆</div>
-        </li>
-        <li class="statistics-list__item" style="--statistics-color: var(--primary-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="driver" />
-          </div>
-          <div class="statistics-name">驾驶员数</div>
-          <div class="statistics-size">{{ driverCount }} 位</div>
-        </li>
-        <li class="statistics-list__item" style="--statistics-color: var(--info-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="user" />
-          </div>
-          <div class="statistics-name">总用户数</div>
-          <div class="statistics-size">{{ userCount }} 位</div>
-        </li>
-        <li class="statistics-list__item active" style="--statistics-color: var(--warning-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="task" />
-          </div>
-          <div class="statistics-name">总任务数</div>
-          <div class="statistics-size">{{ taskCount }} 个</div>
-        </li>
-        <li class="statistics-list__item" style="--statistics-color: var(--primary-color-darker);">
-          <div class="statistics-icon">
-            <svg-icon icon-class="clock" />
-          </div>
-          <div class="statistics-name">运行时长</div>
-          <div class="statistics-size">{{ runningDay }} 天</div>
-        </li>
+      <ul class="icon-block-list">
+        <IconBlock icon="trash" name="垃圾吨数" :desc="trashWeight + ' 吨'" type="warning" />
+        <IconBlock icon="marker" name="投放点数" :desc="disposalCount + ' 个'" type="success" />
+        <IconBlock icon="trash" name="垃圾车数" :desc="vehicleCount + ' 辆'" type="danger" />
+        <IconBlock icon="driver" name="驾驶员数" :desc="driverCount + ' 位'" type="primary" />
+        <IconBlock icon="user" name="总用户数" :desc="userCount + ' 位'" type="info" />
+        <IconBlock icon="task" name="总任务数" :desc="taskCount + ' 个'" type="warning" />
+        <IconBlock icon="clock" name="运行天数" :desc="runningDay + ' 天'" type="primary" />
       </ul>
     </section>
   </div>
@@ -65,9 +23,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import IconBlock from '@/components/IconBlock'
 
 export default {
   name: 'Dashboard',
+  components: { IconBlock },
   data() {
     return {
       trashWeight: 666,
@@ -111,48 +71,12 @@ export default {
   font-size: 18px;
 }
 
-.statistics-list {
+.icon-block-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 30px;
   padding: 0;
   margin: 0;
   list-style-type: none;
-
-  &__item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 18px 24px;
-    border: 1px solid var(--secondary-color-lighter);
-    border-radius: 20px;
-
-    .statistics-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--statistics-color);
-      border-radius: 10px;
-
-      svg {
-        fill: var(--statistics-color);
-      }
-    }
-
-    .statistics-name {
-      margin-top: 18px;
-      white-space: nowrap;
-    }
-
-    .statistics-size {
-      margin-top: 9px;
-      font-size: 18px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-  }
 }
 </style>
