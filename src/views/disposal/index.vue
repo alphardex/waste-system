@@ -440,31 +440,22 @@ export default {
   }
 }
 
-.app-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(414px, 1fr));
+@include pc-layout {
+  .app-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 #container {
   width: 600px;
   height: 560px;
-
-  @include pc-layout {
-    margin-left: 20px;
-  }
 }
 
 #operation-container {
   display: grid;
   gap: 1rem;
-
-  @include pc-layout {
-    padding: 20px;
-  }
-
-  @include sp-layout {
-    padding: 20px 0;
-  }
+  padding: 20px;
 }
 
 #panel {
@@ -488,8 +479,7 @@ export default {
 
   @include sp-layout {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     gap: 1rem;
 
     .dot-reader {
@@ -530,7 +520,7 @@ export default {
 
 .function-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
   width: 100%;
   padding: 0;
