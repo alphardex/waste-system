@@ -188,18 +188,16 @@ export default {
       reiszeEnable: true
     })
     this.map = map
-    AMap.plugin('AMap.TruckDriving', () => {
-      const truckOptions = {
-        map: this.map,
-        policy: 0,
-        size: 1,
-        city: 'jiangsu',
-        panel: 'panel'
-      }
-      const truckDriving = new AMap.TruckDriving(truckOptions)
-      map.addControl(truckDriving)
-      this.truckDriving = truckDriving
-    })
+    const truckOptions = {
+      map: this.map,
+      policy: 0,
+      size: 1,
+      city: 'jiangsu',
+      panel: 'panel'
+    }
+    const truckDriving = new AMap.TruckDriving(truckOptions)
+    this.truckDriving = truckDriving
+    this.map.plugin(truckDriving)
     this.driver = new Driver({
       closeBtnText: '关闭',
       prevBtnText: '后退',
@@ -241,7 +239,8 @@ export default {
           return new AMap.Marker({
             position: new AMap.LngLat(item.x, item.y),
             title: `投放点${i + 1}\n重量: ${item.weight}吨`,
-            content: DEFAULT_MARKER_ICON
+            content: DEFAULT_MARKER_ICON,
+            offset: new AMap.Pixel(-11, -21)
           })
         }
       })
@@ -336,21 +335,23 @@ export default {
     },
     handleVehicleMode(value) {
       if (value) {
-        this.clickListener = AMap.event.addListener(this.map, 'click', e => {
+        const clickListener = e => {
           const marker = new AMap.Marker({
             position: e.lnglat,
             map: this.map,
             title: `垃圾车${this.vehicleMarkers.length + 1}`,
             content: DEFAULT_VEHICLE_ICON,
-            offset: new AMap.Pixel(-12, -12),
+            offset: new AMap.Pixel(-20, -12),
             draggable: true
           })
           marker.on('click', e => this.handleClickVehicleMarker(e))
           this.vehicleMarkers.push(marker)
           this.map.add(marker)
-        })
+        }
+        this.clickListener = clickListener
+        this.map.on('click', this.clickListener)
       } else {
-        AMap.event.removeListener(this.clickListener)
+        this.map.off('click', this.clickListener)
       }
     },
     handleCalcDistance() {
