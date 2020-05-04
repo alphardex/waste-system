@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div id="operation-container">
+    <div id="operation-container" :class="{isRoutePlanning}">
       <div class="dot-operations">
         <el-upload
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -545,7 +545,10 @@ export default {
           this.truckDriving = newTruckDriving
           this.truckDriving.search(path, (status, result) => {
             if (status === 'complete') {
-              this.$message.success('路径规划成功！')
+              this.$message.success({
+                duration: 2000,
+                message: '路径规划成功！'
+              })
               this.isRoutePlanning = true
             }
           })
@@ -589,9 +592,15 @@ export default {
 
 #operation-container {
   padding: 20px;
+  transition: 0.3s;
 
   & > *:not(:first-child) {
     margin-top: 1rem;
+  }
+
+  &.isRoutePlanning {
+    opacity: 0;
+    filter: blur(5px);
   }
 }
 
@@ -603,12 +612,11 @@ export default {
 
 #panel {
   position: fixed;
-  z-index: 9999;
   background-color: white;
   max-height: 90%;
   overflow-y: auto;
-  top: 20px;
-  right: 580px;
+  top: 50px;
+  right: 570px;
   width: 280px;
 }
 
