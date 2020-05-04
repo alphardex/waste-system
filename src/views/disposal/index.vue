@@ -59,6 +59,7 @@
               v-model="selectPointMode"
               active-color="var(--switch-panel-color)"
               inactive-color="var(--switch-panel-color)"
+              @change="handleSelectMode"
             />
           </SwitchPanel>
         </ul>
@@ -86,7 +87,6 @@
               size="mini"
               type="danger"
               icon="el-icon-delete"
-              @click="handleDelete(row, $index)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -473,6 +473,14 @@ export default {
         this.map.on('click', this.clickListener)
       } else {
         this.map.off('click', this.clickListener)
+      }
+    },
+    handleSelectMode(value) {
+      if (!value) {
+        this.selectedPoints = []
+        this.markers.forEach(marker => marker.setContent(DEFAULT_MARKER_ICON))
+        this.vehicleMarkers.forEach(marker => marker.setContent(DEFAULT_VEHICLE_ICON))
+        this.$message.success('点选择已清空')
       }
     },
     handleCalcDistance() {
