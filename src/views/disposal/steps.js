@@ -51,7 +51,7 @@ const steps = [
     element: '.select-point-mode',
     popover: {
       title: '点选择',
-      description: '开启则能在地图上选中想要的点（变绿）',
+      description: '开启则能选中想要的点，关闭则清空已选点',
       position: 'bottom'
     }
   },

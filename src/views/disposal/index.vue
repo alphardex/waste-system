@@ -46,7 +46,7 @@
       </div>
       <div class="vehicle-control">
         <ul class="switch-panel-list">
-          <SwitchPanel icon="truck" name="添加垃圾车模式" type="danger">
+          <SwitchPanel icon="truck" name="添加垃圾车模式" type="danger" class="add-vehicle">
             <el-switch
               v-model="addVehicleMode"
               active-color="var(--switch-panel-color)"
@@ -54,7 +54,7 @@
               @change="handleVehicleMode"
             />
           </SwitchPanel>
-          <SwitchPanel icon="marker" name="点选择模式" type="primary">
+          <SwitchPanel icon="marker" name="点选择模式" type="primary" class="select-point-mode">
             <el-switch
               v-model="selectPointMode"
               active-color="var(--switch-panel-color)"
