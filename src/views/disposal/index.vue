@@ -33,7 +33,7 @@
           type="primary"
           class="route-planning"
           icon="el-icon-discover"
-          @click="handleRoutePlanning"
+          @click="handleOpenRoutePlanningForm"
         >路径规划</el-button>
         <el-button
           round
@@ -104,11 +104,53 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="updateData">确 定</el-button>
+          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="updateData">确定</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog title="路径规划参数设定" :visible.sync="routeDialogFormVisible">
+        <el-form ref="routeForm" :model="routeForm" :rules="routeRules">
+          <el-form-item label="规划策略" label-width="120px" prop="policy">
+            <el-input-number v-model="routeForm.policy" :min="1" :max="9" />
+            <el-popover placement="right" width="400" trigger="hover">
+              <el-table :data="strategies" height="250">
+                <el-table-column width="150" property="strategy" label="策略" />
+                <el-table-column width="150" property="desc" label="描述" />
+              </el-table>
+              <el-button slot="reference" class="view-strategies">查看策略</el-button>
+            </el-popover>
+          </el-form-item>
+          <el-form-item label="车型大小" label-width="120px" prop="size">
+            <el-input-number v-model="routeForm.size" :min="1" :max="4" />
+            <el-popover placement="right" width="400" trigger="hover">
+              <el-table :data="sizes" height="250">
+                <el-table-column width="150" property="size" label="车型" />
+                <el-table-column width="150" property="desc" label="描述" />
+                <el-table-column width="150" property="weight" label="范围(吨)" />
+              </el-table>
+              <el-button slot="reference" class="view-sizes">查看车型</el-button>
+            </el-popover>
+          </el-form-item>
+          <el-form-item label="载重(吨)" label-width="120px" prop="load">
+            <el-input v-model.number="routeForm.load" />
+          </el-form-item>
+          <el-form-item label="自重(吨)" label-width="120px" prop="weight">
+            <el-input v-model.number="routeForm.weight" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="routeDialogFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleRoutePlanning">确定</el-button>
         </div>
       </el-dialog>
     </div>
+    <el-button
+      v-if="isRoutePlanning"
+      round
+      type="warning"
+      class="clearRoute"
+      @click="handleClearRoute"
+    >结束规划</el-button>
     <div id="map-container">
       <div id="container" />
       <div id="panel" />
@@ -143,6 +185,7 @@ export default {
       listLoading: false,
       weightRange: [0, 100],
       dialogFormVisible: false,
+      routeDialogFormVisible: false,
       addVehicleMode: false,
       clickListener: null,
       vehicleMarkers: [],
@@ -150,11 +193,18 @@ export default {
       selectedPoints: [],
       driver: null,
       truckDriving: null,
+      isRoutePlanning: false,
       form: {
         id: null,
         x: '',
         y: '',
         weight: ''
+      },
+      routeForm: {
+        policy: 1,
+        size: 2,
+        load: 0.9,
+        weight: 10
       },
       rules: {
         x: [
@@ -178,7 +228,78 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      routeRules: {
+        load: [
+          {
+            required: true,
+            message: '请输入载重',
+            trigger: 'blur'
+          }
+        ],
+        weight: [
+          {
+            required: true,
+            message: '请输入自重',
+            trigger: 'blur'
+          }
+        ]
+      },
+      strategies: [
+        {
+          strategy: '1',
+          desc: '考虑路况，尽量躲避拥堵而规划路径'
+        },
+        {
+          strategy: '2',
+          desc: '考虑路况，不走高速'
+        },
+        {
+          strategy: '3',
+          desc: '考虑路况，尽可能规划收费较低甚至免费的路径'
+        },
+        {
+          strategy: '4',
+          desc: '考虑路况，尽量躲避拥堵，并且不走高速'
+        },
+        {
+          strategy: '5',
+          desc: '考虑路况，尽量不走高速，并且尽量规划收费较低甚至免费的路径结果'
+        },
+        {
+          strategy: '6',
+          desc: '考虑路况，尽量的躲避拥堵，并且规划收费较低甚至免费的路径结果'
+        },
+        {
+          strategy: '7',
+          desc: '考虑路况，尽量躲避拥堵，规划收费较低甚至免费的路径结果，并且尽量不走高速路'
+        },
+        {
+          strategy: '8',
+          desc: '考虑路况，会优先选择高速路'
+        },
+        {
+          strategy: '9',
+          desc: '考虑路况，会优先考虑高速路，并且会考虑路况躲避拥堵'
+        }
+      ],
+      sizes: [{
+        size: '1',
+        desc: '微型车',
+        weight: '<1.5'
+      }, {
+        size: '2',
+        desc: '轻型车',
+        weight: '1.5-5'
+      }, {
+        size: '3',
+        desc: '中型车',
+        weight: '5-10'
+      }, {
+        size: '4',
+        desc: '重型车',
+        weight: '>10'
+      }]
     }
   },
   mounted() {
@@ -190,8 +311,8 @@ export default {
     this.map = map
     const truckOptions = {
       map: this.map,
-      policy: 0,
-      size: 1,
+      policy: 1,
+      size: 2,
       city: 'jiangsu',
       panel: 'panel'
     }
@@ -379,6 +500,12 @@ export default {
       this.driver.defineSteps(steps)
       this.driver.start()
     },
+    handleOpenRoutePlanningForm() {
+      this.routeDialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['routeForm'].clearValidate()
+      })
+    },
     handleRoutePlanning() {
       const path = this.selectedPoints.map(point => {
         const pos = point.getPosition()
@@ -394,11 +521,34 @@ export default {
         })
         return
       }
-      this.truckDriving.search(path, (status, result) => {
-        if (status === 'complete') {
-          this.$message.success('路径规划成功！')
+      this.$refs['routeForm'].validate(valid => {
+        if (valid) {
+          this.routeDialogFormVisible = false
+          const newTruckOptions = {
+            map: this.map,
+            policy: this.routeForm.policy,
+            size: this.routeForm.size,
+            load: this.routeForm.load,
+            weight: this.routeForm.weight,
+            city: 'jiangsu',
+            panel: 'panel'
+          }
+          const newTruckDriving = new AMap.TruckDriving(newTruckOptions)
+          this.truckDriving = newTruckDriving
+          this.truckDriving.search(path, (status, result) => {
+            if (status === 'complete') {
+              this.$message.success('路径规划成功！')
+              this.isRoutePlanning = true
+            }
+          })
         }
       })
+    },
+    handleClearRoute() {
+      if (this.truckDriving) {
+        this.truckDriving.clear()
+      }
+      this.isRoutePlanning = false
     }
   }
 }
@@ -437,19 +587,38 @@ export default {
   }
 }
 
+.clearRoute {
+  position: fixed;
+  top: 5px;
+  right: 450px;
+}
+
 #panel {
   position: fixed;
+  z-index: 9999;
   background-color: white;
   max-height: 90%;
   overflow-y: auto;
-  top: 10px;
-  right: 10px;
+  top: 20px;
+  right: 580px;
   width: 280px;
 }
 
 #panel .amap-lib-driving {
   border-radius: 4px;
   overflow: hidden;
+}
+
+@include sp-layout {
+  .clearRoute {
+    position: static;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  #panel {
+    position: static;
+  }
 }
 
 .dot-operations {
@@ -505,5 +674,10 @@ export default {
   padding: 0;
   margin: 0;
   list-style-type: none;
+}
+
+.view-strategies,
+.view-sizes {
+  margin-left: 1rem;
 }
 </style>
