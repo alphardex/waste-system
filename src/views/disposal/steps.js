@@ -67,7 +67,7 @@ const steps = [
     element: '.route-planning',
     popover: {
       title: '路径规划',
-      description: '规划选中点的路径（第一个必须是垃圾车）',
+      description: '规划选中点的路径',
       position: 'bottom'
     }
   },
@@ -75,7 +75,7 @@ const steps = [
     element: '.user-avatar',
     popover: {
       title: '功能菜单',
-      description: '各种功能（例如登出等）',
+      description: '其他功能（例如登出等）',
       position: 'left'
     }
   }
