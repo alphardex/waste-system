@@ -110,24 +110,40 @@ class Ant {
 }
 
 class ACA {
-  constructor(antCount, cityCount, xycoords, ALPHA = 1.0, BETA = 2.0, RHO = 0.5, Q = 100.0) {
+  constructor(antCount = 0, cityCount = 0, distanceGraph = [], ALPHA = 1.0, BETA = 2.0, RHO = 0.5, Q = 100.0) {
     this.ALPHA = ALPHA
     this.BETA = BETA
     this.RHO = RHO
     this.Q = Q
     this.cityCount = cityCount
     this.antCount = antCount
-    const distanceGraph = initialize2DArray(cityCount, cityCount, 0.0)
     this.distanceGraph = distanceGraph
-    this.xycoords = xycoords
-    this.getDistanceGraph()
-    const pheromoneGraph = initialize2DArray(cityCount, cityCount, 1.0)
+    this.updateData()
+  }
+
+  updateData() {
+    const pheromoneGraph = initialize2DArray(this.cityCount, this.cityCount, 1.0)
     this.pheromoneGraph = pheromoneGraph
-    this.ants = Array(antCount).fill(1).map((ant, i) => new Ant(i, cityCount, distanceGraph, pheromoneGraph, ALPHA, BETA))
+    this.ants = Array(this.antCount).fill(1).map((ant, i) => new Ant(i, this.cityCount, this.distanceGraph, this.pheromoneGraph, this.ALPHA, this.BETA))
     this.bestAnt = new Ant(-1)
     this.bestAnt.distanceSum = 2 ** 30
     this.iterCount = 1
     this.result = []
+  }
+
+  setAntCount(antCount) {
+    this.antCount = antCount
+    this.updateData()
+  }
+
+  setCityCount(cityCount) {
+    this.cityCount = cityCount
+    this.updateData()
+  }
+
+  setDistanceGraph(distanceGraph) {
+    this.distanceGraph = distanceGraph
+    this.updateData()
   }
 
   getDistanceGraph() {
@@ -138,6 +154,8 @@ class ACA {
         const y1 = this.xycoords[i][1]
         const y2 = this.xycoords[j][1]
         const distance = calcDistance(x1, y1, x2, y2)
+        console.log(x1)
+        console.log(distance)
         this.distanceGraph[i][j] = distance
       }
     }
@@ -181,4 +199,4 @@ class ACA {
   }
 }
 
-module.exports = ACA
+export default ACA

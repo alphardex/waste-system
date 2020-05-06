@@ -163,6 +163,8 @@ import SwitchPanel from '@/components/SwitchPanel'
 import Driver from 'driver.js'
 import 'driver.js/dist/driver.min.css'
 import steps from './steps'
+import ACA from './aca'
+
 const DEFAULT_MARKER_ICON =
   '<svg t="1586837399316" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2975" width="24" height="24"><path d="M512.434393 66.861804c-0.054235 0-0.109494 0-0.163729 0l-0.541329 0c-0.056282 0-0.109494 0-0.163729 0-191.363376 0.434905-346.930477 156.1115-346.930477 347.637582 0 188.810227 119.553886 338.510714 326.018192 532.535709 0.325411 0.434905 0.434905 0.977257 0.814552 1.302669 3.042289 3.260254 6.735401 5.432733 10.646478 6.843872 0.923022 0.325411 1.954515 0.325411 2.933819 0.543376 2.226714 0.542352 4.399193 1.412163 6.681166 1.412163 0.107447 0 0.161682-0.10847 0.270153-0.10847 0.109494 0 0.163729 0.10847 0.272199 0.10847 2.281973 0 4.455475-0.86981 6.681166-1.412163 0.977257-0.217964 2.010797-0.217964 2.933819-0.543376 3.90903-1.412163 7.605212-3.584642 10.646478-6.843872 0.379647-0.325411 0.488117-0.868787 0.813528-1.302669 206.464305-194.024995 326.019215-343.725482 326.019215-532.535709C859.364871 222.973304 703.796746 67.296709 512.434393 66.861804zM511.998465 596.247776c-101.193727 0-183.541223-82.347496-183.541223-183.596482 0-101.247962 82.347496-183.486988 183.541223-183.486988 101.195773 0 183.541223 82.238003 183.541223 183.486988C695.539688 513.901303 613.194238 596.247776 511.998465 596.247776z" p-id="2976" fill="#409EFF"></path></svg>'
 const SELECTED_MARKER_ICON =
@@ -192,6 +194,7 @@ export default {
       selectPointMode: false,
       selectedPoints: [],
       driver: null,
+      aca: null,
       truckDriving: null,
       isRoutePlanning: false,
       form: {
@@ -325,6 +328,7 @@ export default {
       nextBtnText: '前进',
       doneBtnText: '结束'
     })
+    this.aca = new ACA()
   },
   methods: {
     handleChange(file, fileList) {
@@ -532,6 +536,25 @@ export default {
       this.$refs['routeForm'].validate(valid => {
         if (valid) {
           this.routeDialogFormVisible = false
+          const xycoords = path.map(e => e.lnglat)
+          const pointCount = xycoords.length
+          const distanceGraph = this.initialize2DArray(pointCount, pointCount, 0.0)
+          for (const i of Array(pointCount).keys()) {
+            for (const j of Array(pointCount).keys()) {
+              const p1 = xycoords[i]
+              const p2 = xycoords[j]
+              const distance = AMap.GeometryUtil.distanceOfLine([p1, p2])
+              distanceGraph[i][j] = distance
+            }
+          }
+          console.log(distanceGraph)
+          this.aca.setAntCount(pointCount)
+          this.aca.setCityCount(pointCount)
+          this.aca.setDistanceGraph(distanceGraph)
+          this.aca.searchPath(200)
+          const bestPath = this.aca.bestAnt.path
+          console.log(`最佳路径：${bestPath}`)
+          const newPath = bestPath.map(i => path[i])
           const newTruckOptions = {
             map: this.map,
             policy: this.routeForm.policy,
@@ -543,7 +566,7 @@ export default {
           }
           const newTruckDriving = new AMap.TruckDriving(newTruckOptions)
           this.truckDriving = newTruckDriving
-          this.truckDriving.search(path, (status, result) => {
+          this.truckDriving.search(newPath, (status, result) => {
             if (status === 'complete') {
               this.$message.success({
                 duration: 2000,
@@ -560,6 +583,10 @@ export default {
         this.truckDriving.clear()
       }
       this.isRoutePlanning = false
+      this.aca = new ACA()
+    },
+    initialize2DArray(w, h, val = null) {
+      return Array.from({ length: h }).map(() => Array.from({ length: w }).fill(val))
     }
   }
 }
